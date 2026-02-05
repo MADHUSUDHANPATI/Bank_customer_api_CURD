@@ -1,11 +1,8 @@
 package com.crud.app;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
-@Entity(name= "customer")
+@Entity
 public class Customer {
 
     @Id
@@ -13,8 +10,13 @@ public class Customer {
     private Long id;
     private String firstName;
     private String lastName;
+
+    @Column(unique = true)
     private String email;
     private String phoneNumber;
+
+    public Customer() {
+    }
 
     public Customer(Long id, String firstName, String lastName, String email, String phoneNumber) {
         this.id = id;

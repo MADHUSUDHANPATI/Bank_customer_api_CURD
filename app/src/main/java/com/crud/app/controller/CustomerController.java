@@ -1,21 +1,63 @@
 package com.crud.app.controller;
 
 import com.crud.app.Customer;
+import com.crud.app.service.CustomerService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/customers")
 public class CustomerController {
 
-    @GetMapping("/public/customers")
-    public String getAllCustomer() {
+    @Autowired
+    private CustomerService customerService;
 
-        return "madhu";
+    @PostMapping
+    public ResponseEntity<Customer> createCustomer(@RequestBody Customer customer) {
+
+        return ResponseEntity.ok(customerService.createCustomer(customer));
     }
 
-    @PostMapping("/public/customers")
-    public Customer createCustomer(@RequestBody Customer customer) {
+    @GetMapping
+    public ResponseEntity<List<Customer>> getAllCustomer() {
 
-        return customer;
+        return ResponseEntity.ok(customerService.getAllCustomer());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Customer> getCustomerById(@PathVariable Long id) {
+
+        return customerService.getCustomerById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Customer> updateCustomer( @PathVariable Long id, @RequestBody Customer customer) {
+
+        try {
+            return ResponseEntity.ok(customerService.updateCustomer(id, customer));
+        } catch (RuntimeException e) {
+
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteCustomer(@PathVariable Long id) {
+
+        try {
+            customerService.deleteCustomer(id);
+            return ResponseEntity.ok("Customer deleted Successfully");
+        }
+        catch ( RuntimeException e) {
+
+            return ResponseEntity.notFound().build();
+        }
+
+
     }
 }
